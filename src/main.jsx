@@ -1,15 +1,39 @@
-// Content.jsx
-
 import React, { useState, useEffect } from 'react';
 
+function Pagination({ data, itemsPerPage, currentPage, setCurrentPage }) {
+  const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const handleClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  return (
+    <nav aria-label="Page navigation example">
+      <ul className="pagination justify-content-center">
+        <li className={currentPage === 1 ? "page-item disabled" : "page-item"}>
+          <button className="page-link" onClick={() => handleClick(currentPage - 1)}>&laquo;</button>
+        </li>
+        {Array.from({ length: totalPages }, (_, index) => (
+          <li key={index} className={currentPage === index + 1 ? "page-item active" : "page-item"}>
+            <button className="page-link" onClick={() => handleClick(index + 1)}>{index + 1}</button>
+          </li>
+        ))}
+        <li className={currentPage === totalPages ? "page-item disabled" : "page-item"}>
+          <button className="page-link" onClick={() => handleClick(currentPage + 1)}>&raquo;</button>
+        </li>
+      </ul>
+    </nav>
+  );
+}
 
 function Main() {
   const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/turkeys.json');
+        const response = await fetch('/turkeys.json'); 
         const jsonData = await response.json();
         setData(jsonData);
       } catch (error) {
@@ -20,30 +44,41 @@ function Main() {
     fetchData();
   }, []);
 
+  const itemsPerPage = 15;
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentData = data.slice(startIndex, endIndex);
 
   return (
-    <div className="App">
-      <h1 style={{ color: "green" }}>using JavaScript inbuilt FETCH API</h1>
-      <center>
-        {data.map((dataObj, index) => {
-          return (
-            <div
-              style={{
-                width: "15em",
-                backgroundColor: "#35D841",
-                padding: 2,
-                borderRadius: 10,
-                marginBlock: 10,
-              }}
-            >
-              <p style={{ fontSize: 20, color: 'white' }}>{dataObj.name}</p>
-            </div>
-          );
-        })}
-      </center>
+    <div className="container">
+      <div className="row justify-content-center">
+        <div className="col-lg-8">
+          <table className="table">
+            <thead>
+              <tr>
+                <th scope="col">Şehir İsmi</th>
+                <th scope="col">Bulunduğu Bölge</th>
+              </tr>
+            </thead>
+            <tbody>
+              {currentData.map((city, index) => (
+                <tr key={index}>
+                  <td>{city.name}</td>
+                  <td>{city.region}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <Pagination
+            data={data}
+            itemsPerPage={itemsPerPage}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </div>
+      </div>
     </div>
   );
- 
 }
 
 export default Main;
