@@ -1,7 +1,16 @@
 // Header.jsx
-import React from 'react';
+import React, { useState } from 'react';
 
-function Header() {
+
+
+function Header({ onSort }) {
+  const [isAscending, setIsAscending] = useState(true);
+
+  const handleSortButtonClick = () => {
+    setIsAscending(!isAscending);
+    onSort(isAscending);
+  };
+
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -23,7 +32,9 @@ function Header() {
                   <a className="nav-link" href="https://example.com">Pricing</a>
                 </li>
                 <li className="nav-item">
-                  <a className="nav-link disabled" href="https://example.com">Disabled</a>
+                <button onClick={handleSortButtonClick}>
+        {isAscending ? 'A-Z Sırala' : 'Z-A Sırala'}
+      </button>
                 </li>
               </ul>
             </div>

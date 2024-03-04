@@ -26,7 +26,8 @@ function Pagination({ data, itemsPerPage, currentPage, setCurrentPage }) {
   );
 }
 
-function Main() {
+function Main({ onSort }) {
+  debugger
   const [data, setData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -49,7 +50,21 @@ function Main() {
   const endIndex = startIndex + itemsPerPage;
   const currentData = data.slice(startIndex, endIndex);
 
+
+  const handleSort = (isAscending) => {
+    let sortedData;
+    if (isAscending) {
+      // A-Z sıralama
+      sortedData = [...data].sort((a, b) => a.name.localeCompare(b.name));
+    } else {
+      // Z-A sıralama
+      sortedData = [...data].sort((a, b) => b.name.localeCompare(a.name));
+    }
+    setData(sortedData);
+  };
+
   return (
+    
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-lg-8">
